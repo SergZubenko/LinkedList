@@ -3,7 +3,7 @@ package com.luxoft.datastructures.list;
 public class LinkedList extends AbstractList {
     private Node firstNode;
     private Node lastNode;
-    private int size;
+
 
     @Override
     public int size() {
@@ -78,6 +78,9 @@ public class LinkedList extends AbstractList {
     @Override
     public void clear() {
 
+        size = 0;
+        firstNode = lastNode = null;
+
     }
 
     @Override
@@ -110,7 +113,7 @@ public class LinkedList extends AbstractList {
         Node prev;
         Object value;
 
-        public Node(Object value) {
+        Node(Object value) {
             this.value = value;
         }
     }

@@ -6,7 +6,7 @@ import static junit.framework.TestCase.*;
 
 public class LinkedListTest {
 
-    List list=  new LinkedList() {{
+    private List list=  new LinkedList() {{
             add("str1");
             add("str2");
             add("str3");
@@ -18,8 +18,9 @@ public class LinkedListTest {
     public void testAddIntoEmptyList() {
         list.clear();
         assertEquals(list.size(), 0);
-
+        System.out.println(11111);
         list.add("one");
+        System.out.println(list.size());
         assertEquals(list.get(0), "one");
         assertEquals(list.size(), 1);
     }
