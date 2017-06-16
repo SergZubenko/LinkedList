@@ -4,9 +4,9 @@ import org.junit.Test;
 
 import static junit.framework.TestCase.*;
 
-public class ArrayListTest {
+public class LinkedListTest {
 
-    List list=  new ArrayList() {{
+    List list=  new LinkedList() {{
             add("str1");
             add("str2");
             add("str3");

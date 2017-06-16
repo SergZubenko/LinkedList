@@ -1,13 +1,9 @@
 package com.luxoft.datastructures.list;
 
-public class ArrayList implements  List{
-    int size=0;
+public class ArrayList extends  AbstractList{
+
     Object[] array;
 
-
-    public int size(){
-        return size;
-    }
 
     public String toString() {
         String str = "[ ";
@@ -33,31 +29,20 @@ public class ArrayList implements  List{
         }
     }
 
-    private void checkIndex(int index){
-        if (index < 0 || index > size) {
-            String msg = "Index " + index +
-                    " should be between 0 and " + (size - 1) + " inclusive";
-            throw new IndexOutOfBoundsException(msg);
-        }
-    }
-
 
     //public methods
     public void add(Object value) {
         checkExpandList();
         array[size] = value;
-
         size++;
     }
 
-
     //add to position
     public void add(int index, Object value){
-        checkIndex(index);
         checkExpandList();
-
-        for (int i =size-1; i>index; i--){
-            array[i+1] = array[i];
+        checkIndex(index, size+1);
+        for (int i =size; i>index; i--){
+            array[i] = array[i-1];
         }
 
         array[index] = value;
@@ -88,7 +73,7 @@ public class ArrayList implements  List{
             size --;
             return array[size];
         }
-        System.arraycopy(array, index+1, array, index, array.length);
+        System.arraycopy(array, index+1, array, index, size-1);
         Object foundObject = array[--size];
         array[size] = null;
         return foundObject;
@@ -100,7 +85,9 @@ public class ArrayList implements  List{
 
     public void trimToSize(int newSize) {
         if (newSize > size || newSize<0) {
-
+            String msg = "New size " + newSize +
+                    " should be between 0 and " + (size - 1) + " inclusive";
+            throw new IndexOutOfBoundsException(msg);
         }
         size = newSize;
     }
@@ -119,11 +106,18 @@ public class ArrayList implements  List{
     }
 
     public int lastIndexOf(Object value) {
+        for (int i=size-1; i>=0; i--){
+            if (array[i].equals(value)) {
+                return i;
+            }
+        }
+
         return -1;
     }
 
     public boolean contains(Object object) {
-        return false;
+
+        return indexOf(object)>=0;
     }
 
 

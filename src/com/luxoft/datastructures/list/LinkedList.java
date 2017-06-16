@@ -1,25 +1,43 @@
 package com.luxoft.datastructures.list;
 
-public class LinkedList implements List {
-    private Node head;
-    private Node tail;
+public class LinkedList extends AbstractList {
+    private Node firstNode;
+    private Node lastNode;
     private int size;
-
 
     @Override
     public int size() {
         return size;
     }
 
+    private Node getNode(int index) {
+        checkIndex(index);
+        Node currentNode;
+        if (index > size / 2) {
+            currentNode = lastNode;
+            for (int i = size; i >= index; i--) {
+                currentNode = currentNode.prev;
+            }
+        } else {
+            currentNode = firstNode;
+            for (int i = 0; i <= index; i++) {
+                currentNode = currentNode.next;
+            }
+        }
+        return currentNode;
+    }
+
+
     @Override
     public void add(Object value) {
+
         Node node = new Node(value);
         if (size == 0) {
-            head = tail = node;
+            firstNode = lastNode = node;
         } else {
-            tail.next = node;
-            node.prev = tail;
-            tail = node;
+            lastNode.next = node;
+            node.prev = lastNode;
+            lastNode = node;
         }
         size++;
     }
@@ -27,8 +45,29 @@ public class LinkedList implements List {
     @Override
     public void add(int index, Object value) {
 
+        if (size == 0 && index ==0) {
+            firstNode = lastNode = new Node (value);
+        }else
+            if (index == size){
+                lastNode.next = new Node(value);
+                lastNode.next.prev = lastNode;
+                lastNode = lastNode.next;
+            } else
+            {
+                Node oldNode = getNode(index);
+                Node newNode = new Node(value);
+                newNode.next = oldNode;
+                newNode.prev = oldNode.prev;
+                oldNode.prev = newNode;
+                if (firstNode.equals(oldNode)) {
+                    firstNode = newNode;
+                }
+                if (lastNode.equals(oldNode)) {
+                    lastNode = newNode;
+                }
+        }
 
-
+        size++;
     }
 
     @Override
@@ -48,7 +87,7 @@ public class LinkedList implements List {
 
     @Override
     public Object get(int index) {
-        return null;
+        return getNode(index).value;
     }
 
     @Override
