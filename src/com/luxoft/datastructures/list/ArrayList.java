@@ -1,5 +1,9 @@
 package com.luxoft.datastructures.list;
 
+import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+
 public class ArrayList extends  AbstractList{
 
     Object[] array;
@@ -121,7 +125,46 @@ public class ArrayList extends  AbstractList{
     }
 
 
+    @Override
+    public Iterator iterator() {
+
+        return new MyIterator();
+    }
+
+
+    @Override
+    public Spliterator spliterator() {
+        return null;
+    }
+
+
+    class MyIterator implements Iterator{
+
+        int currentIndex = -1;
+
+
+        @Override
+        public boolean hasNext() {
+
+            return currentIndex <ArrayList.this.size - 1;
+
+        }
+
+        @Override
+        public Object next() {
+            return array[++currentIndex];
+        }
+
+
+        @Override
+        public void remove(){
+
+
+        }
+    }
+
+
+
 
 }
-
 

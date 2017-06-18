@@ -3,7 +3,7 @@ package com.luxoft.datastructures.list;
 /**
  * Created by dp-ptcstd-37 on 16.06.2017.
  */
-public abstract class AbstractList  implements  List{
+public abstract class AbstractList  implements  List, Iterable{
 
     int size;
 

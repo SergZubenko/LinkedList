@@ -1,5 +1,7 @@
 package com.luxoft.datastructures.list;
 
+import java.util.Iterator;
+
 public class LinkedList extends AbstractList {
     private Node firstNode;
     private Node lastNode;
@@ -106,6 +108,11 @@ public class LinkedList extends AbstractList {
     @Override
     public boolean contains(Object value) {
         return false;
+    }
+
+    @Override
+    public Iterator iterator() {
+        return null;
     }
 
     private static class Node {
