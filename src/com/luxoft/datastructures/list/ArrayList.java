@@ -132,12 +132,6 @@ public class ArrayList extends  AbstractList{
     }
 
 
-    @Override
-    public Spliterator spliterator() {
-        return null;
-    }
-
-
     class MyIterator implements Iterator{
 
         int currentIndex = -1;
@@ -146,7 +140,7 @@ public class ArrayList extends  AbstractList{
         @Override
         public boolean hasNext() {
 
-            return currentIndex <ArrayList.this.size - 1;
+            return currentIndex < (size - 1);
 
         }
 
@@ -158,8 +152,7 @@ public class ArrayList extends  AbstractList{
 
         @Override
         public void remove(){
-
-
+            ArrayList.this.remove(currentIndex);
         }
     }
 

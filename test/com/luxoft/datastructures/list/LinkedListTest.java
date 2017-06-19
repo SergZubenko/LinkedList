@@ -49,6 +49,8 @@ public class LinkedListTest {
         list.clear();
         assertEquals(list.size(), 0);
         list.add(0, "begin");
+        System.out.println(list.size());
+        System.out.println(list.get(0));
         assertEquals(list.get(0), "begin");
         assertEquals(list.size(), 1);
     }
@@ -90,11 +92,6 @@ public class LinkedListTest {
         assertEquals(actual, 1);
     }
 
-    @Test
-    public void testIndexOfDoesNotExist() {
-        int actual = list.indexOf("str50");
-        assertEquals(actual, -1);
-    }
 
     @Test
     public void testLastIndexOf() {
@@ -118,6 +115,7 @@ public class LinkedListTest {
 
     @Test
     public void testContainsFalse() {
+        System.out.println(list.indexOf("str50"));
         assertFalse(list.contains("str50"));
     }
 

@@ -17,12 +17,12 @@ public class LinkedList extends AbstractList {
         Node currentNode;
         if (index > size / 2) {
             currentNode = lastNode;
-            for (int i = size; i >= index; i--) {
+            for (int i = 1; i<size - index; i++) {
                 currentNode = currentNode.prev;
             }
         } else {
             currentNode = firstNode;
-            for (int i = 0; i <= index; i++) {
+            for (int i = 0; i < index; i++) {
                 currentNode = currentNode.next;
             }
         }
@@ -47,26 +47,27 @@ public class LinkedList extends AbstractList {
     @Override
     public void add(int index, Object value) {
 
-        if (size == 0 && index ==0) {
-            firstNode = lastNode = new Node (value);
-        }else
-            if (index == size){
-                lastNode.next = new Node(value);
-                lastNode.next.prev = lastNode;
-                lastNode = lastNode.next;
-            } else
-            {
-                Node oldNode = getNode(index);
-                Node newNode = new Node(value);
-                newNode.next = oldNode;
-                newNode.prev = oldNode.prev;
-                oldNode.prev = newNode;
-                if (firstNode.equals(oldNode)) {
-                    firstNode = newNode;
-                }
-                if (lastNode.equals(oldNode)) {
-                    lastNode = newNode;
-                }
+        if (size == 0 && index == 0) {
+            firstNode = lastNode = new Node(value);
+        } else if (index == size) {
+            lastNode.next = new Node(value);
+            lastNode.next.prev = lastNode;
+            lastNode = lastNode.next;
+        } else {
+            Node oldNode = getNode(index);
+            Node newNode = new Node(value);
+            newNode.next = oldNode;
+            newNode.prev = oldNode.prev;
+            if (oldNode.prev != null){
+                oldNode.prev.next = newNode;
+            }
+            oldNode.prev = newNode;
+            if (firstNode==oldNode) {
+                firstNode = newNode;
+            }
+            if (lastNode==oldNode) {
+                lastNode = newNode;
+            }
         }
 
         size++;
@@ -74,7 +75,23 @@ public class LinkedList extends AbstractList {
 
     @Override
     public Object set(int index, Object value) {
-        return null;
+        Node oldNode = getNode(index);
+        Node newNode = new Node(value);
+        newNode.prev = oldNode.prev;
+        newNode.next = oldNode.next;
+        if(oldNode.prev !=null){
+            oldNode.prev.next = newNode;
+        }
+        if(oldNode.next !=null){
+            oldNode.next.prev = newNode;
+        }
+        if (firstNode == oldNode){
+            firstNode = newNode;
+        }
+        if(lastNode == oldNode){
+            lastNode = newNode;
+        }
+        return oldNode.value;
     }
 
     @Override
@@ -87,7 +104,26 @@ public class LinkedList extends AbstractList {
 
     @Override
     public Object remove(int index) {
-        return null;
+        //
+        Node currentNode;
+        if (firstNode == lastNode && index == 0) {
+            currentNode = firstNode;
+            firstNode = lastNode = null;
+        } else if (index == 0) {
+            currentNode = firstNode;
+            firstNode = firstNode.next;
+            firstNode.prev = null;
+        } else if (index == size - 1) {
+            currentNode = lastNode;
+            lastNode = lastNode.prev;
+            lastNode.next = null;
+        } else {
+            currentNode = getNode(index);
+            currentNode.next.prev = currentNode.prev;
+            currentNode.prev.next = currentNode.next;
+        }
+        size--;
+        return currentNode.value;
     }
 
     @Override
@@ -97,22 +133,32 @@ public class LinkedList extends AbstractList {
 
     @Override
     public int indexOf(Object value) {
-        return 0;
+        int index = -1;
+        for (Node currentNode = firstNode; currentNode != null; currentNode = currentNode.next){
+            index ++;
+            if (currentNode.value.equals(value)) {
+                return index;
+            }
+        }
+        return -1;
     }
+
 
     @Override
     public int lastIndexOf(Object value) {
-        return 0;
-    }
-
-    @Override
-    public boolean contains(Object value) {
-        return false;
+        int index = size-1;
+        for (Node currentNode = lastNode; currentNode != null; currentNode = currentNode.prev){
+            index --;
+            if (currentNode.value.equals(value)) {
+                break;
+            }
+        }
+        return index;
     }
 
     @Override
     public Iterator iterator() {
-        return null;
+        return new MyIterator();
     }
 
     private static class Node {
@@ -123,5 +169,31 @@ public class LinkedList extends AbstractList {
         Node(Object value) {
             this.value = value;
         }
+    }
+
+
+    class MyIterator implements Iterator {
+
+        int currentIndex = -1;
+
+
+        @Override
+        public boolean hasNext() {
+
+            return currentIndex < (size - 1);
+
+        }
+
+        @Override
+        public Object next() {
+            return get(++currentIndex);
+        }
+
+
+        @Override
+        public void remove() {
+            LinkedList.this.remove(currentIndex);
+        }
+
     }
 }
