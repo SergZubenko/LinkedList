@@ -1,9 +1,7 @@
 package com.luxoft.fridges;
 
-import com.luxoft.datastructures.list.ArrayList;
-
+import java.util.ArrayList;
 import java.util.Random;
-import java.util.StringJoiner;
 
 /**
  * Created by dp-ptcstd-37 on 20.06.2017.
@@ -11,46 +9,80 @@ import java.util.StringJoiner;
 public class Refrigerator {
 
 
+    public static void main(String[] args) {
+        Matrix matrix = new Matrix();
+        System.out.println(matrix);
+        System.out.println(matrix.switchValue(1,1));
+        System.out.println(matrix);
+    }
 
 
-    class Matrix{
-        private int array[][];
+    public static void resolveMatrix(){
 
-        private int sizex = 4;
 
-        private int sizey = 4;
 
-        public Matrix(){
-            array = new int[sizex][sizey];
+    }
+
+
+    static class Matrix {
+        private int matrix[][];
+
+        private int size = 4;
+
+
+        public Matrix() {
+            matrix = new int[size][size];
             Random random = new Random();
 
-            for (int i = 0; i < sizex; i++) {
-                for (int j = 0; j < sizey; j++) {
-                    array[i][j] = random.nextInt(2)-1;
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    matrix[i][j] = random.nextInt(2);
                 }
             }
-
         }
 
         @Override
-        public String toString(){
-            StringBuilder stringBuilder = new StringBuilder(sizex * sizey);
-            for (int i = 0; i < sizex; i++) {
-                for (int j = 0; j < sizey; j++) {
-                    System.out.print(array[i][j]);
+        public String toString() {
+            StringBuilder stringBuilder = new StringBuilder(size * size);
+            stringBuilder.append("[");
+
+            for (int i = 0; i < size; i++) {
+                stringBuilder.append('\n');
+                stringBuilder.append("[");
+                for (int j = 0; j < size; j++) {
+                    stringBuilder.append(matrix[i][j]);
+                    stringBuilder.append('\t');
                 }
-                System.out.println();
+                stringBuilder.append("]");
             }
-            return "";
+            stringBuilder.append('\n');
+            stringBuilder.append("]");
+            return stringBuilder.toString();
         }
 
-        public Matrix(int[][] inputArray){
-            array = inputArray;
+        public Matrix(int[][] inputArray) {
+            matrix = inputArray;
         }
 
+        public boolean checkMartix() {
 
-        public boolean checkMartix(){
-            return false;
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    if (matrix[i][j] == 1) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public boolean switchValue(int x, int y){
+            for (int i = 0; i < size; i++) {
+                matrix[x][i] = ~matrix[x][i]+2;
+            }
+
+            return checkMartix();
         }
 
     }
