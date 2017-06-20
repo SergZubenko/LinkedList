@@ -19,6 +19,7 @@ public class Test {
 //        }
 
 
+
         MyTestInjectObject myObj = new MyTestInjectObject();
 
         Class myClass = myObj.getClass();
