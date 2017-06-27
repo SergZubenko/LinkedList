@@ -7,52 +7,67 @@ import java.util.Iterator;
 
 
 //TODO: generate tests
-public class HashMap implements  Iterable{
+public class HashMap implements Iterable {
 
-    int bucketsCount = 10;
-
-
-    ArrayList[] entries = new ArrayList[bucketsCount];
-
-    private int getBucketNumber(Object key){
-        if (key == null){
-            return 0;
-        }
-        return Math.abs(31*key.hashCode()%bucketsCount);
-    }
+    private int bucketsCount = 10;
+    private int size;
 
 
-    private void resize(){
+    ArrayList<Entry>[] entries = new ArrayList[bucketsCount];
 
-
-        ArrayList[] entries = new ArrayList[bucketsCount];
-    }
-
-
-    public HashMap(){
+    public HashMap() {
         for (int i = 0; i < bucketsCount; i++) {
             entries[i] = new ArrayList();
         }
     }
 
+    private int getBucketNumber(Object key) {
+        if (key == null) {
+            return 0;
+        }
+        return Math.abs(key.hashCode() % bucketsCount);
+    }
+
+
+    private void checkAndResize() {
+        if (size / bucketsCount >= 0.75) {
+            ArrayList<Entry>[] oldEntries = entries;
+            bucketsCount = bucketsCount * 2;
+
+            entries = new ArrayList[bucketsCount];
+
+            for (ArrayList<Entry> entryList : oldEntries) {
+                for (Entry entry : entryList) {
+                    put(entry.key, entry.value);
+                }
+            }
+        }
+    }
+
+
+    public HashMap(int capacity) {
+        bucketsCount = 5;
+        //init();
+    }
+
 
     private Object put(Object key, Object value, boolean replace) {
-        Entry entry  = getEntry(key);
+        Entry entry = getEntry(key);
 
         Object oldValue = null;
 
-        if (entry == null)
-        {
+        if (entry == null) {
             entry = new Entry(key, value);
             entries[getBucketNumber(key)].add(entry);
-        } else
-        {
+            size++;
+        } else {
             oldValue = entry.value;
-            if(replace){
+            if (replace) {
                 entry.value = value;
             }
         }
-        return  oldValue;
+        checkAndResize();
+        return oldValue;
     }
 
 
@@ -66,22 +81,32 @@ public class HashMap implements  Iterable{
 
     @Nullable
     private Entry getEntry(Object key) {
-        ArrayList  currentList= entries[getBucketNumber(key)];
-        for (Object entry : currentList) {
-            Object oldKey = ((Entry)entry).key;
-            if (oldKey  == key || (oldKey != null && oldKey.equals(key))){
-                return (Entry)entry;
+        ArrayList<Entry> currentList = entries[getBucketNumber(key)];
+        for (Entry entry : currentList) {
+            Object oldKey = entry.key;
+            if (oldKey == key || (oldKey != null && oldKey.equals(key))) {
+                return entry;
             }
         }
         return null;
     }
 
 
+    public Object delete(Object key) {
+        Entry entry = getEntry(key);
+        if (entry != null) {
+            entries[getBucketNumber(key)].remove(entry);
+            return entry.getValue();
+        }
+        return null;
+    }
 
-    public void clear(){
+    public void clear() {
         for (int i = 0; i < bucketsCount; i++) {
             entries[i].clear();
         }
+
+        size = 0;
     }
 
     public void print() {
@@ -95,24 +120,22 @@ public class HashMap implements  Iterable{
 
     public void putAll(HashMap map) {
         for (Object newEntry : map) {
-            put(((Entry)newEntry).getKey(), ((Entry)newEntry).getValue());
+            put(((Entry) newEntry).getKey(), ((Entry) newEntry).getValue());
         }
 
     }
 
     public void putAllIfAbsent(HashMap map) {
         for (Object newEntry : map) {
-            putIfAbsent(((Entry)newEntry).getKey(), ((Entry)newEntry).getValue());
+            putIfAbsent(((Entry) newEntry).getKey(), ((Entry) newEntry).getValue());
         }
     }
 
     public Object get(Object key) {
         Entry entry = getEntry(key);
-        if (entry != null){
-            return  entry.value;
-        }
-        else
-        {
+        if (entry != null) {
+            return entry.value;
+        } else {
             return null;
         }
     }
@@ -121,13 +144,16 @@ public class HashMap implements  Iterable{
         return getEntry(key) != null;
     }
 
-    public int size(){
-        int size = 0;
-        for (int i = 0; i < bucketsCount; i++) {
-            size += entries[i].size();
-        }
+    public int size() {
+//        if (size == 0) {
+//            for (int i = 0; i < bucketsCount; i++) {
+//                size += entries[i].size();
+//            }
+//        }
         return size;
-    };
+    }
+
+    ;
 
     @Override
     public Iterator iterator() {
@@ -143,12 +169,12 @@ public class HashMap implements  Iterable{
 
         @Override
         public boolean hasNext() {
-           if  (currentIterator.hasNext()){
-               return true;
-           }
-            for (int i = currentBucket+1; i < entries.length; i++) {
+            if (currentIterator.hasNext()) {
+                return true;
+            }
+            for (int i = currentBucket + 1; i < entries.length; i++) {
                 currentIterator = entries[i].iterator();
-                if (currentIterator.hasNext()){
+                if (currentIterator.hasNext()) {
                     currentBucket = i;
                     return true;
                 }
@@ -171,23 +197,23 @@ public class HashMap implements  Iterable{
             this.value = value;
         }
 
-        public Entry clone(){
+        public Entry clone() {
             return new Entry(key, value);
         }
 
-        public String toString(){
+        public String toString() {
             return "Key = " + key + "  value = " + value;
         }
 
-        public void print(){
+        public void print() {
             System.out.println(toString());
         }
 
-        public Object getKey(){
+        public Object getKey() {
             return key;
         }
 
-        public Object getValue(){
+        public Object getValue() {
             return value;
         }
     }

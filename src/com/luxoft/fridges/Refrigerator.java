@@ -10,12 +10,28 @@ public class Refrigerator {
 
 
     public static void main(String[] args) {
-        Matrix matrix = new Matrix();
-        System.out.println(matrix);
-        System.out.println(matrix.switchValue(1, 1));
-        System.out.println(matrix);
-    }
 
+         int[][] array = {{1, 1}, {1, 1}};
+
+//        int[][] array = {
+//                {1, 0, 1},
+//                {0, 1, 0},
+//                {1, 1, 0}
+//        };
+
+        Matrix matrix = new Matrix(array);
+
+        //Matrix matrix = new Matrix();
+
+        //System.out.println(matrix);
+        // matrix.switchValue(1,1);
+        System.out.println(matrix);
+
+        System.out.println(matrix.resolveMatrix());
+
+        //System.out.println(matrix);
+     /*   */
+    }
 
 }
 
@@ -23,21 +39,25 @@ public class Refrigerator {
 class Matrix {
     private int matrix[][];
 
-    private int size = 4;
+    private int size = 3;
 
 
     int level = 0;
 
 
-    public boolean checkLevel() {
+    long switchesCount = 0;
+
+ /*   public boolean checkLevel() {
         if (checkMartix()) {
             return true;
         }
         ;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
+                //System.out.println("Switch "+((i+1)*size+j-size+1));
+                // System.out.println("x=" + i + "  y=" + j);
                 if (switchValue(i, j)) {
-                    System.out.println("x=" + i + "  y=" + j);
+                    System.out.println("Switch " + ((i + 1) * size + j - size + 1));
                     return true;
                 } else {
                     switchValue(i, j);
@@ -45,28 +65,66 @@ class Matrix {
             }
         }
         return false;
+    }*/
+
+    public boolean resolveMatrix() {
+        return resolveMatrix(-1, 0);
     }
 
 
-    public boolean resolveMatrix(int upperLevel, int allowedLevel) {
+    private boolean resolveMatrix(int upperLevel, int allowedLevel) {
         int currentLevel = upperLevel + 1;
 
-        if (checkLevel()){
-            return true;
+
+        //System.out.println("level " + currentLevel);
+        //System.out.println(this);
+
+//        if (checkLevel()) {
+//            return true;
+//        }
+
+        if (allowedLevel < currentLevel) {
+            return false;
         }
 
-
-        for (int l = 0; l < 2; l++) {
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
-                    switchValue(i, j);
-                    if (resolveMatrix(l)) {
-                        return true;
-                    }
-                    switchValue(i, j);
-                }
+        for (int l = currentLevel; l <= allowedLevel; l++) {
+            if (currentLevel == size * size - 1) {
+                return false;
             }
 
+            for (int c = currentLevel; c < size * size; c++) {
+                int i = (int) c / size;
+                int j = c - size * i;
+
+
+                if (currentLevel == 3 || switchesCount > 1000){
+                    return true;
+                }
+
+                // for (int i = 0; i < size; i++) {
+                //  for (int j = 0; j < size; j++) {
+                //System.out.println("level "+ l +" x="+ i + " y="+j);
+                System.out.println("L"+currentLevel + " sw "+(c+1));
+                switchValue(i, j);
+                System.out.println(this);
+                if (checkMartix()) {
+                    System.out.println("Switch " + ((i + 1) * size + j - size + 1));
+                    return true;
+                }
+                ;
+                if (currentLevel < allowedLevel) {
+                    if (resolveMatrix(currentLevel, allowedLevel)) {
+                        System.out.println("Switch " + ((i + 1) * size + j - size + 1));
+                        return true;
+                    }
+                }
+                // System.out.println("Switch "+((i+1)*size+j-size+1));
+                switchValue(i, j);
+            }
+            //}
+            if (currentLevel == 0) {
+                allowedLevel++;
+            }
         }
 
 
@@ -88,7 +146,7 @@ class Matrix {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder(size * size);
-        stringBuilder.append("[");
+        // stringBuilder.append("[");
 
         for (int i = 0; i < size; i++) {
             stringBuilder.append('\n');
@@ -99,13 +157,14 @@ class Matrix {
             }
             stringBuilder.append("]");
         }
-        stringBuilder.append('\n');
-        stringBuilder.append("]");
+        //stringBuilder.append('\n');
+        //stringBuilder.append("]");
         return stringBuilder.toString();
     }
 
     public Matrix(int[][] inputArray) {
         matrix = inputArray;
+        size = inputArray.length;
     }
 
     public boolean checkMartix() {
@@ -118,16 +177,25 @@ class Matrix {
             }
         }
 
+        System.out.println();
         return true;
     }
 
-    public boolean switchValue(int x, int y) {
+    public void switchValue(int x, int y) {
+        switchesCount++;
+        if (switchesCount % 1000000 == 0) {
+            System.out.println(switchesCount);
+        }
         for (int i = 0; i < size; i++) {
             matrix[x][i] = ~matrix[x][i] + 2;
+            if (x != i) {
+                matrix[i][y] = ~matrix[i][y] + 2;
+            }
         }
 
-        return checkMartix();
+        //System.out.println(this);
+
+        //return checkMartix();
     }
 
-}
 }

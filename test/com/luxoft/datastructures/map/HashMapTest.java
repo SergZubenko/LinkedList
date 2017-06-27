@@ -23,6 +23,25 @@ public class HashMapTest {
         map.put("key5",5);
     }
 
+
+    @Test
+    public void delete() throws Exception {
+        map.delete("key2");
+
+        assertNull(map.get("key2"));
+
+    }
+
+    @Test
+    public void clear() throws Exception {
+
+        map.clear();
+
+        assertEquals(0, map.size());
+
+    }
+
+
     @Test
     public void put() throws Exception {
         map.put("testKey","some value");
@@ -149,6 +168,26 @@ public class HashMapTest {
 
         map.put("null", null);
         assertNull(map.get("null"));
+    }
+
+
+    @Test
+    public void checkResize(){
+        for (int i = 0; i < 20; i++) {
+            map.put("Keynew"+i, i+100);
+        }
+        map.print();
+
+        assertEquals(1, map.get("key1"));
+        assertEquals(2, map.get("key2"));
+        assertEquals(3, map.get("key3"));
+        assertEquals(4, map.get("key4"));
+        assertEquals(5, map.get("key5"));
+
+        assertEquals(104, map.get("Keynew4"));
+
+
+        map.print();
     }
 
 }
